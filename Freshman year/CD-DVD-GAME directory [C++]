@@ -1,0 +1,730 @@
+/* This is my final project for the introductory course to C++. There is a lot to be improved. */
+
+#include <iostream> // std::cout / std::cin
+#include <fstream> // .txt -tallentaminen
+#include <string>
+#include <algorithm> // std::replace
+#include <Windows.h> // tyhjennä();
+
+using namespace std;
+
+//// ALIOHJELMAT ////
+void valikko();
+void valitse(int valinta);
+void jatka();
+void tyhjenna();
+void lopeta();
+string muunna(string input);
+
+void etsiDVD();
+void etsiCD();
+void etsiPeli();
+void hae(int tyyppi, int haettavaAsia, string hakuEhto);
+
+void naytaKaikki();
+void naytaDVD();
+void naytaCD();
+void naytaPeli();
+
+void lisaaTieto();
+void lisaaDVD();
+void lisaaCD();
+void lisaaPeli();
+void tallenna(int tyyppi, struct tieto);
+
+void poista();
+/////////////////////
+///// TIETUEET /////
+struct tieto {
+	string nimi;
+	string muuttuja;
+	int vuosi;
+};
+
+tieto elokuva;
+tieto levy;
+tieto peli;
+//////////////////////
+string valilyonti = std::string(4, '\t');
+string viiva = std::string(80, '_');
+
+int main() {
+	setlocale(LC_ALL, "");
+	valikko();
+	return 0;
+}
+
+void valikko() { // Tulostetaan valikko
+	tyhjenna();
+	cout << "DVD-, CD- ja pelihakemisto" << "\n" << endl;
+	cout << "1. Hae elokuvaa" << endl;
+	cout << "2. Hae levyä" << endl;
+	cout << "3. Hae peliä" << endl;
+	cout << "4. Näytä kaikki" << "\n" << endl;
+
+	cout << "5. Lisää uusi" << endl;
+	cout << "6. Poista tieto" << endl;
+	cout << "7. LOPETA" << endl;
+
+	int valinta;
+	cin >> valinta;
+	valitse(valinta);
+	return;
+}
+
+void valitse(int valinta) {
+	switch (valinta)
+	{
+		case 1: {
+			// Hae elokuvaa
+			etsiDVD();
+			break;
+		}
+		case 2: {
+			// Hae levyä
+			etsiCD();
+			break;
+		}
+		case 3: {
+			// Hae peliä
+			etsiPeli();
+			break;
+		}
+		case 4: {
+			// Nayta kaikki
+			naytaKaikki();
+			break;
+		}
+		case 5: {
+			// Lisää tieto
+			lisaaTieto();
+			break;
+		}
+		case 6: {
+			// Poista tieto
+			poista();
+			break;
+		}
+		case 7: {
+			// Lopeta ohjelma
+			lopeta();
+			break;
+		}
+		default: {
+			break;
+		}
+	}
+	return;
+}
+
+void etsiDVD() {
+	tyhjenna();	// Millä tiedolla haetaan
+		cout << "Haluatko etsiä..." << "\n" << endl;
+		cout << "1. Nimen perusteella" << endl;
+		cout << "2. Ohjaajan perusteella" << endl;
+		cout << "3. Julkaisuvuoden perusteella" << "\n" << endl;
+		cout << "4. TAKAISIN" << endl;
+	int valinta;
+	string hakuSana;
+	string kysymys;
+	cin >> valinta;
+		if (valinta == 1) {	// Haettava termi
+			kysymys = "Kirjoita elokuvan nimi...";
+		}
+		else if (valinta == 2) {
+			kysymys = "Kirjoita ohjaajan nimi";
+		}
+		else if (valinta == 3) {
+			kysymys = "Kirjoita elokuvan valmistusvuosi";
+		}
+		else {
+			valikko();
+		}
+	tyhjenna;
+	cin.ignore();
+	cout << kysymys << endl;
+	std::getline(std::cin, hakuSana);
+	hakuSana = muunna(hakuSana);
+	hae(1, valinta, hakuSana); // Kutsutaan hakufunktiota
+}
+void etsiCD() {
+	tyhjenna(); // Millä tiedolla haetaan
+		cout << "Haluatko etsiä..." << "\n" << endl;
+		cout << "1. Nimen perusteella" << endl;
+		cout << "2. Esittäjän perusteella" << endl;
+		cout << "3. Julkaisuvuoden perusteella" << "\n" << endl;
+		cout << "4. TAKAISIN" << endl;
+	int valinta;
+	string hakuSana;
+	string kysymys;
+	cin >> valinta;
+		if (valinta == 1) {	// Haettava termi
+			kysymys = "Kirjoita levyn nimi...";
+		}
+		else if (valinta == 2) {
+			kysymys = "Kirjoita esittäjän nimi";
+		}
+		else if (valinta == 3) {
+			kysymys = "Kirjoita levyn valmistusvuosi";
+		}
+		else {
+			valikko();
+		}
+	tyhjenna;
+	cin.ignore();
+	cout << kysymys << endl;
+	std::getline(std::cin, hakuSana);
+	hakuSana = muunna(hakuSana);
+	hae(2, valinta, hakuSana);	// Kutsutaan hakufunktiota
+}
+void etsiPeli() {
+	tyhjenna();	// Millä tiedolla haetaan
+		cout << "Haluatko etsiä..." << "\n" << endl;
+		cout << "1. Nimen perusteella" << endl;
+		cout << "2. Julkaisijan perusteella" << endl;
+		cout << "3. Julkaisuvuoden perusteella" << "\n" << endl;
+		cout << "4. TAKAISIN" << endl;
+	int valinta;
+	string hakuSana;
+	string kysymys;
+	cin >> valinta;
+		if (valinta == 1) {	// Haettava termi
+			kysymys = "Kirjoita pelin nimi...";
+		}
+		else if (valinta == 2) {
+			kysymys = "Kirjoita julkaisijan nimi";
+		}
+		else if (valinta == 3) {
+			kysymys = "Kirjoita pelin valmistusvuosi";
+		}
+		else {
+			valikko();
+		}
+	tyhjenna;
+	cin.ignore();
+	cout << kysymys << endl;
+	std::getline(std::cin, hakuSana);
+	hakuSana = muunna(hakuSana);
+	hae(3, valinta, hakuSana); // Kutsutaan hakufunktiota
+}
+void hae(int tyyppi, int haettavaAsia, string hakuEhto) {
+	if (tyyppi == 1) {						// Jos haetaan elokuvaa
+		ifstream elokuvat("elokuvat.txt"); // Avataan tiedosto
+		string nimi;						// Kysytään tiedot
+		string ohjaaja;
+		string vuosi;
+		int i = 0;							// Alustetaan laskuri
+
+		if (haettavaAsia == 1) {			// Jos haetaan nimellä
+			while (elokuvat >> nimi >> ohjaaja >> vuosi) {
+				if (hakuEhto == nimi) {
+					tyhjenna();
+					if (i == 0) {
+						cout << "Nimi" << valilyonti << "Ohjaaja" << valilyonti << "Vuosi" << endl;
+						cout << viiva << endl;
+					}
+					cout << nimi << valilyonti << ohjaaja << valilyonti << vuosi << endl;
+					i++;
+				}
+			}
+		} else if (haettavaAsia == 2) {		// Jos haetaan ohjaajalla
+			while (elokuvat >> nimi >> ohjaaja >> vuosi) {
+				if (hakuEhto == ohjaaja) {
+					tyhjenna();
+					if (i == 0) {
+						cout << "Nimi" << valilyonti << "Ohjaaja" << valilyonti << "Vuosi" << endl;
+						cout << viiva << endl;
+					}
+					cout << nimi << valilyonti << ohjaaja << valilyonti << vuosi << endl;
+					i++;
+				}
+			}
+		} else if (haettavaAsia == 3) {		// Jos haetaan vuodella
+			while (elokuvat >> nimi >> ohjaaja >> vuosi) {
+				if (hakuEhto == vuosi) {
+					tyhjenna();
+					if (i == 0) {
+						cout << "Nimi" << valilyonti << "Ohjaaja" << valilyonti << "Vuosi" << endl;
+						cout << viiva << endl;
+					}
+					cout << nimi << valilyonti << ohjaaja << valilyonti << vuosi << endl;
+					i++;
+				}
+			}
+		}
+		if (i > 0) { // Jos haku tuotti tulosta
+			cout << "\n\n" << "Haulla \'" << hakuEhto << "\' loytyi " << i << " elokuvaa" << endl;
+			jatka();
+		}
+		else { // Jos haulla ei tullut tulosta
+			tyhjenna();
+			cout << "\n\n" << "Haulla \'" << hakuEhto << "\' ei löytynyt elokuvaa";
+			jatka();
+		}
+	}
+	else if (tyyppi == 2) { // Jos haetaan musiikkia
+		ifstream musiikki("musiikki.txt");
+		string nimi;
+		string esittaja;
+		string vuosi;
+		int i = 0;
+
+		if (haettavaAsia == 1) { // Jos haetaan nimellä
+			while (musiikki >> nimi >> esittaja >> vuosi) {
+				if (hakuEhto == nimi) {
+					tyhjenna();
+					if (i == 0) {
+						cout << "Nimi" << valilyonti << "Esittaja" << valilyonti << "Vuosi" << endl;
+						cout << viiva << endl;
+					}
+					cout << nimi << valilyonti << esittaja << valilyonti << vuosi << endl;
+					i++;
+				}
+			}
+		}
+		else if (haettavaAsia == 2) { // Jos haetaan esittäjällä
+			while (musiikki >> nimi >> esittaja >> vuosi) {
+				if (hakuEhto == esittaja) {
+					tyhjenna();
+					if (i == 0) {
+						cout << "Nimi" << valilyonti << "Esittaja" << valilyonti << "Vuosi" << endl;
+						cout << viiva << endl;
+					}
+					cout << nimi << valilyonti << esittaja << valilyonti << vuosi << endl;
+					i++;
+				}
+			}
+		}
+		else if (haettavaAsia == 3) { // Jos haetaan vuodella
+			while (musiikki >> nimi >> esittaja >> vuosi) {
+				cout << vuosi;
+				if (hakuEhto == vuosi) {
+					tyhjenna();
+					if (i == 0) {
+						cout << "Nimi" << valilyonti << "Esittaja" << valilyonti << "Vuosi" << endl;
+						cout << viiva << endl;
+					}
+					cout << nimi << valilyonti << esittaja << valilyonti << vuosi << endl;
+					i++;
+				}
+			}
+		}
+		if (i > 0) { // Jos haku tuotti tulosta
+			cout << "\n\n" << "Haulla \'" << hakuEhto << "\' loytyi " << i << " levy(ä)" << endl;
+			jatka();
+		}
+		else { // Jos haulla ei tullut tulosta
+			tyhjenna();
+			cout << "\n\n" << "Haulla \'" << hakuEhto << "\' ei löytynyt levyä";
+			jatka();
+		}
+	}
+	else if (tyyppi == 3) {	// Jos haetaan pelejä
+		ifstream pelit("pelit.txt");
+		string nimi;
+		string julkaisija;
+		string vuosi;
+		int i = 0;
+
+		if (haettavaAsia == 1) {	// Jos haetaan nimellä
+			while (pelit >> nimi >> julkaisija >> vuosi) {
+				if (hakuEhto == nimi) {
+					tyhjenna();
+					if (i == 0) {
+						cout << "Nimi" << valilyonti << "Julkaisija" << valilyonti << "Vuosi" << endl;
+						cout << viiva << endl;
+					}
+					cout << nimi << valilyonti << julkaisija << valilyonti << vuosi << endl;
+					i++;
+				}
+			}
+		}
+		else if (haettavaAsia == 2) {		// Jos haetaan julkaisijalla
+			while (pelit >> nimi >> julkaisija >> vuosi) {
+				if (hakuEhto == julkaisija) {
+					tyhjenna();
+					if (i == 0) {
+						cout << "Nimi" << valilyonti << "Julkaisija" << valilyonti << "Vuosi" << endl;
+						cout << viiva << endl;
+					}
+					cout << nimi << valilyonti << julkaisija << valilyonti << vuosi << endl;
+					i++;
+				}
+			}
+		}
+		else if (haettavaAsia == 3) { // Jos heataan vuodella
+			while (pelit >> nimi >> julkaisija >> vuosi) {
+				cout << vuosi;
+				if (hakuEhto == vuosi) {
+					tyhjenna();
+					if (i == 0) {
+						cout << "Nimi" << valilyonti << "Julkaisija" << valilyonti << "Vuosi" << endl;
+						cout << viiva << endl;
+					}
+					cout << nimi << valilyonti << julkaisija << valilyonti << vuosi << endl;
+					i++;
+				}
+			}
+		}
+		if (i > 0) {		// Jos haku tuotti tulosta
+			cout << "\n\n" << "Haulla \'" << hakuEhto << "\' loytyi " << i << " peli(ä)" << endl;
+			jatka();
+		}
+		else { // Jos haulla ei tullut tulosta
+			tyhjenna();
+			cout << "\n\n" << "Haulla \'" << hakuEhto << "\' ei löytynyt peliä";
+			jatka();
+		}
+	}
+	else {
+		// TUNTEMATON TYYPPI
+		return;
+	}
+}
+
+
+void naytaKaikki() {
+	tyhjenna();
+	cout << "Näytä kaikki..." << "\n\n";
+	cout << "1. DVD:t" << "\n";
+	cout << "2. CD:t" << "\n";
+	cout << "3. Pelit" << "\n\n";
+
+	cout << "4. TAKAISIN" << "\n";
+	int valinta;
+	cin >> valinta;
+
+	switch (valinta)
+	{
+		case 1: {
+			// Näytä kaikki DVD:t
+			naytaDVD();
+			break;
+		}
+		case 2: {
+			// Näytä kaikki CD:t
+			naytaCD();
+			break;
+		}
+		case 3: {
+			// Näytä kaikki pelit
+			naytaPeli();
+			break;
+		}
+		default: {
+			break;
+		}
+	}
+	return;
+}
+
+void naytaDVD() {
+	ifstream elokuvat("elokuvat.txt");	// Avataan tiedosto
+	string nimi;						// Kysytään tiedot
+	string ohjaaja;
+	int vuosi;
+	tyhjenna();
+	cout << "Kaikki DVD:t" << endl;
+	cout << "******" << "\n\n";
+	cout << "Nimi" << valilyonti << "Ohjaaja" << valilyonti << "Vuosi" << endl;
+	cout << viiva << endl;
+	while (elokuvat >> nimi >> ohjaaja >> vuosi) {
+		cout << nimi << valilyonti << ohjaaja << valilyonti << vuosi << endl;
+	}									// Tulostetaan tiedot
+	cin.ignore();
+	jatka();
+}
+
+void naytaCD() {
+	ifstream musiikki("musiikki.txt");
+	string nimi;
+	string esittaja;
+	int vuosi;
+	tyhjenna();
+	cout << "Kaikki CD:t" << endl;
+	cout << "******" << "\n\n";
+	cout << "Nimi" << valilyonti << "Esittäjä" << valilyonti << "Vuosi" << endl;
+	cout << viiva << endl;
+	while (musiikki >> nimi >> esittaja >> vuosi) {
+		cout << nimi << valilyonti << esittaja << valilyonti << vuosi << endl;
+	}
+	cin.ignore();
+	jatka();
+}
+
+void naytaPeli() {
+	ifstream pelit("pelit.txt");
+	string nimi;
+	string julkaisija;
+	int vuosi;
+	tyhjenna();
+	cout << "Kaikki pelit" << endl;
+	cout << "******" << "\n\n";
+	cout << "Nimi" << valilyonti << "Julkaisija" << valilyonti << "Vuosi" << endl;
+	cout << viiva << endl;
+	while (pelit >> nimi >> julkaisija >> vuosi) {
+		cout << nimi << valilyonti << julkaisija << valilyonti << vuosi << endl;
+	}
+	cin.ignore();
+	jatka();
+}
+
+void lisaaTieto() { // Kysytään lisättävän tiedon tyyppi
+	tyhjenna();
+	cout << "Mitä haluat lisätä?" << "\n\n";
+	cout << "1. Lisää DVD" << "\n";
+	cout << "2. Lisää CD" << "\n";
+	cout << "3. Lisää peli" << "\n\n";
+	cout << "4. TAKAISIN" << "\n";
+	int valinta;
+	cin >> valinta;
+
+	switch (valinta) {
+		case 1: {
+			// Lisaa elokuva
+			lisaaDVD();
+			break;
+		}
+		case 2: {
+			// Lisaa levy
+			lisaaCD();
+			break;
+		}
+		case 3: {
+			// Lisaa peli
+			lisaaPeli();
+			break;
+		}
+		case 4: {
+			// Takaisin
+			valikko();
+		}
+		default: {
+			break;
+		}
+	}
+}
+void lisaaDVD() {
+	string nimi; // Lisättävät tiedot
+	string ohjaaja;
+	int vuosi;
+	
+	cin.ignore();
+
+	tyhjenna();
+	cout << "Kirjoita elokuvan nimi\n";		// Tallennetaan lisättävät tiedot
+	std::getline(std::cin, elokuva.nimi);
+	elokuva.nimi = muunna(elokuva.nimi);
+	tyhjenna();
+
+	cout << "Kirjoita ohjaajan nimi\n";
+	std::getline(std::cin, elokuva.muuttuja);
+	elokuva.muuttuja = muunna(elokuva.muuttuja);
+	tyhjenna();
+
+	cout << "Kirjoita elokuvan valmistusvuosi\n";
+	cin >> elokuva.vuosi;
+	
+	tallenna(1, elokuva); // Kutsutaan tallennusfunktiota, välitetään tiedot, sekä tallennettavan tiedon tyyppi
+	return;
+}
+void lisaaCD() {
+	string nimi;
+	string esittaja;
+	int vuosi;
+	cin.ignore();
+	tyhjenna();
+
+	cout << "Kirjoita levyn nimi\n";
+	std::getline(std::cin, levy.nimi);
+	levy.nimi = muunna(levy.nimi);
+	tyhjenna();
+
+	cout << "Kirjoita esittäjän nimi\n";
+	std::getline(std::cin, levy.muuttuja);
+	levy.muuttuja = muunna(levy.muuttuja);
+	tyhjenna();
+
+	cout << "Kirjoita levyn valmistusvuosi\n";
+	cin >> levy.vuosi;
+
+	tallenna(2, levy);
+	return;
+}
+void lisaaPeli() {
+	string nimi;
+	string julkaisija;
+	int vuosi;
+	cin.ignore();
+	tyhjenna();
+
+	cout << "Kirjoita pelin nimi\n";
+	std::getline(std::cin, peli.nimi);
+	peli.nimi = muunna(peli.nimi);
+	tyhjenna();
+
+	cout << "Kirjoita julkaisijan nimi\n";
+	std::getline(std::cin, peli.muuttuja);
+	peli.muuttuja = muunna(peli.muuttuja);
+	tyhjenna();
+
+	cout << "Kirjoita pelin valmistusvuosi\n";
+	cin >> peli.vuosi;
+	
+	tallenna(3, peli);
+	return;
+}
+
+void tallenna(int tyyppi, tieto tieto) {
+	switch (tyyppi)
+	{
+		case 1: {
+			// Tallenna DVD
+			ofstream elokuva("elokuvat.txt", ios::app);
+			elokuva << tieto.nimi << ' ' << tieto.muuttuja << ' ' << tieto.vuosi << endl;
+			elokuva.close();
+			valikko();
+			break;
+		}
+		case 2: {
+			// Tallenna CD
+			ofstream musiikki("musiikki.txt", ios::app);
+			musiikki << tieto.nimi << ' ' << tieto.muuttuja << ' ' << tieto.vuosi << endl;
+			musiikki.close();
+			valikko();
+			break;
+		}
+		case 3: {
+			// Tallenna peli
+			ofstream peli("pelit.txt", ios::app);
+			peli << tieto.nimi << ' ' << tieto.muuttuja << ' ' << tieto.vuosi << endl;
+			peli.close();
+			valikko();
+			break;
+		}
+		default: {
+			break;
+		}
+	}
+}
+
+void poista() {
+	tyhjenna();
+	cout << "Mitä haluat poistaa?" << "\n" << endl;
+	cout << ">TÄMÄ POISTAA KAIKKI TIEDOT<" << "\n" << endl;
+	cout << "1. Poista DVD:t" << "\n";
+	cout << "2. Poista CD:t" << "\n";
+	cout << "3. Poista pelit" << "\n\n";
+	cout << "4. TAKAISIN" << "\n";
+	int valinta;
+	cin >> valinta;
+
+	switch (valinta) {
+		case 1: {
+			// Poista elokuva
+			tyhjenna();
+			ofstream elokuva("elokuvat.txt");
+			elokuva << ' ' << ' ' << endl;
+			elokuva.close();
+			cout << "DVD:t poistettu" << "\n" << endl;
+			cin.ignore();
+			jatka();
+			break;
+		}
+		case 2: {
+			// Poista levy
+			tyhjenna();
+			ofstream musiikki("musiikki.txt");
+			musiikki << ' ' << ' ' << endl;
+			musiikki.close();
+			cout << "CD:t poistettu" << "\n" << endl;
+			cin.ignore();
+			jatka();
+			break;
+		}
+		case 3: {
+			// Poista peli
+			tyhjenna();
+			ofstream pelit("pelit.txt");
+			pelit << ' ' << ' ' << endl;
+			pelit.close();
+			cout << "Pelit poistettu" << "\n" << endl;
+			cin.ignore();
+			jatka();
+			break;
+		}
+		case 4: {
+			// Takaisin
+			valikko();
+		}
+		default: {
+			break;
+		}
+	}
+}
+
+string muunna(string input) {
+	// Korvataan stringin välilyönnit alaviivoilla, palautetaan string takaisin
+	std::replace(input.begin(), input.end(), ' ', '_');
+	return input;
+}
+
+void jatka() {
+	// Pysäytetään ohjelman toistaminen, kysytään käyttäjän syötettä
+	cout << "\n\n" << "Paina Enter jatkaaksesi . . .";
+	std::cin.ignore();
+	valikko();
+}
+
+void tyhjenna() {
+	///////////////////////////////////
+	// Duthomas @ www.cplusplus.com //
+ 	/////////////////////////////////
+	HANDLE                     hStdOut;
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	DWORD                      count;
+	DWORD                      cellCount;
+	COORD                      homeCoords = { 0, 0 };
+
+	hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hStdOut == INVALID_HANDLE_VALUE) return;
+
+	/* Get the number of cells in the current buffer */
+	if (!GetConsoleScreenBufferInfo(hStdOut, &csbi)) return;
+	cellCount = csbi.dwSize.X *csbi.dwSize.Y;
+
+	/* Fill the entire buffer with spaces */
+	if (!FillConsoleOutputCharacter(
+		hStdOut,
+		(TCHAR) ' ',
+		cellCount,
+		homeCoords,
+		&count
+	)) return;
+
+	/* Fill the entire buffer with the current colors and attributes */
+	if (!FillConsoleOutputAttribute(
+		hStdOut,
+		csbi.wAttributes,
+		cellCount,
+		homeCoords,
+		&count
+	)) return;
+
+	/* Move the cursor home */
+	SetConsoleCursorPosition(hStdOut, homeCoords);
+	return;
+}
+
+void lopeta() {
+	cin.ignore();
+	tyhjenna();
+	cout << "Kiitos käynnistä. Tervetuloa uudelleen." << "\n\n";
+	return;
+}
+
+/*
+	JUHA RAINTO	2018
+	TTV18S2
+	Kajaanin ammattikorkeakoulu
+*/
