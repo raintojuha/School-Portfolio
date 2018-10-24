@@ -1,0 +1,156 @@
+/* This is my first project from my freshman year. */
+
+#include <string>
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+using namespace std;
+
+// Määritetään aliohjelmat
+int arvo();															        // Arpoo koneen valinnan
+int muunna(string valinta);											// Muuntaa pelaajan valinnan numeromuotoon
+void tarkistaTulos(int pelaaja, int kone);			// Tarkistaa voittiko pelaaja vai kone	
+void pistelaskuri(int a);											  // Laskee pisteet
+void visualisaatio(int pelaaja, int kone, int kierros, bool loppu);	// Tulostaa pelille visuaalisen ilmeen
+
+int voitto = 0;		// Määritetään julkiset muuttujat
+int tasapeli = 0;
+int tappio = 0;
+
+int main() {
+
+	int kierrokset = 0;		//	Määritetään muuttujat
+	int koneenValinta = 0;
+
+	string valintaMerkkina;
+	int merkinKoodi = 0;
+
+
+	cout << "TERVETULOA! kivi-paperi-sakset peliin. Kuinka monta kierrosta haluat pelata? \n";		// TERVETULOA VIESTI, PELIN ALOITUS
+	cin >> kierrokset;
+
+
+	for (int i = 1; i <= kierrokset; i = i++) {					// FOR LOOP
+		cout << "Valitse Kivi, Paperi tai Sakset \n";			// Kysytään pelaajan valinta
+		cin >> valintaMerkkina;									// Tallennetaan valinta
+		merkinKoodi = muunna(valintaMerkkina);
+		if (merkinKoodi == 0) {
+			cout << "Tuntematon valinta \n\n";					// Virheviesti
+			i = i - 1;											// Poistetaan laskurista tämä kierros
+		}else {
+			koneenValinta = arvo();								// Koneen valinta
+
+			visualisaatio(merkinKoodi, koneenValinta, i, false);
+			tarkistaTulos(merkinKoodi, koneenValinta);
+
+			cout << "\n\n\n";									// Tulostetaan kierroksen loppuun 3 tyhjää riviä
+		}
+	}
+
+	visualisaatio(0, 0, 0, true);								// Tulostetaan loppuruutu
+
+	return 0;													// PÄÄTETÄÄN OHJELMA
+}
+
+int arvo() {
+	return rand() % 3 + 1;
+}
+
+int muunna(string valinta) {
+	if (valinta == "K" || valinta == "k") {						// KIVI
+		return 1;													// Muunnetaan pelajan valinta numeromuotoon
+	}
+	else if (valinta == "P" || valinta == "p") {				// PAPERI
+		return 2;													// Muunnetaan pelajan valinta numeromuotoon
+	}
+	else if (valinta == "S" || valinta == "s") {				// SAKSET
+		return 3;													// Muunnetaan pelajan valinta numeromuotoon
+	}
+	else {														// TUNTEMATON VALINTA
+		return 0;
+	}
+}
+
+
+void tarkistaTulos(int pelaaja, int kone) {
+	int erotus;
+	erotus = pelaaja - kone;
+	if (erotus == -2 || erotus == 1) {
+		pistelaskuri(1);					// pelaaja voitti
+		cout << "\nVOITIT";
+		return;
+	}
+	else if (erotus == -1 || erotus == 2) {
+		pistelaskuri(-1);					// pelaaja hävisi
+		cout << "\nHAVISIT";
+		return;
+	}
+	else {
+		cout << "\nTASAPELI";								// tasapeli
+		pistelaskuri(0);
+		return;
+	}
+}
+
+void pistelaskuri(int a) {														// Pistelaskuri -aliohjelma lisää ja vähentää pelaajan pisteitä
+	if (a == 1) {																// pelin aikana. 
+		voitto = voitto + 1;
+		return;
+	}
+	else if (a == -1) {
+		tappio = tappio + 1;
+		return;
+	}
+	else {
+		tasapeli = tasapeli + 1;
+		return;
+	}
+}
+
+void visualisaatio(int pelaaja, int kone, int kierros, bool loppu) {				// Visualisaatio -aliohjelma luo jokaiselle kierrokselle
+	string pelaajaTxt;																// visuaalisen ilmeen
+	string koneTxt;
+	if (loppu == false) {															// Muunnetaan pelaajan ja koneen valinnat tekstimuotoon
+
+		if (pelaaja == 1) {
+			pelaajaTxt = "kiven";
+		}
+		else if (pelaaja == 2) {
+			pelaajaTxt = "paperin";
+		}
+		else {
+			pelaajaTxt = "sakset";
+		}
+		if (kone == 1) {
+			koneTxt = "kiven";
+		}
+		else if (kone == 2) {
+			koneTxt = "paperin";
+		}
+		else {
+			koneTxt = "sakset";
+		}
+
+		cout << "\n***************\n";												// Tulostetaan kierroksen tiedot
+		cout << "** KIERROS " << kierros << " **";
+		cout << "\n***************\n";
+		cout << "Sina valitsit " << pelaajaTxt << "\n";
+		cout << "Kone valitsi " << koneTxt << "\n";
+	}
+	else {
+		cout << "\n\n*************\n";												// Tulostetaan pelin lopuksi pisteet
+		cout << "VOITOT:     " << voitto << "\n";
+		cout << "TASAPELIT:  " << tasapeli << "\n";
+		cout << "TAPPIOT:    " << tappio << "\n";
+		cout << "\n*************\n\n";
+
+	}
+
+	
+}
+
+/*
+	JUHA RAINTO	2018
+	TTV18S2
+	Kajaanin ammattikorkeakoulu
+*/
